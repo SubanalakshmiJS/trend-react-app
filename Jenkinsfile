@@ -6,9 +6,11 @@ pipeline {
   }
 
   stages {
+
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/SubanalakshmiJS/trend-react-app.git'
+        git branch: 'main',
+            url: 'https://github.com/SubanalakshmiJS/trend-react-app.git'
       }
     }
 
@@ -20,11 +22,21 @@ pipeline {
 
     stage('Docker Push') {
       steps {
-        sh 'docker push $IMAGE'
+        withCredentials([usernamePassword(
+          credentialsId: 'dockerhub',
+          usernameVariable: 'DOCKER_USER',
+          passwordVariable: 'DOCKER_PASS'
+        )]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push $IMAGE
+            docker logout
+          '''
+        }
       }
     }
 
-    stage('Deploy') {
+    stage('Deploy to EKS') {
       steps {
         sh 'kubectl set image deployment/trend-react trend-react=$IMAGE'
       }
