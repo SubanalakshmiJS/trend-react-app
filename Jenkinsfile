@@ -1,25 +1,32 @@
 pipeline {
   agent any
+
+  environment {
+    IMAGE = "lakshmisrinath/trend-react-app:${BUILD_NUMBER}"
+  }
+
   stages {
-    stage('Clone') {
+    stage('Checkout') {
       steps {
-        git 'https://github.com/Vennilavan12/Trend.git'
+        git 'https://github.com/SubanalakshmiJS/trend-react-app.git'
       }
     }
-    stage('Build Image') {
+
+    stage('Docker Build') {
       steps {
-        sh 'docker build -t lakshmisrinath/trend-react-app .'
+        sh 'docker build -t $IMAGE .'
       }
     }
-    stage('Push Image') {
+
+    stage('Docker Push') {
       steps {
-        sh 'docker push lakshmisrinath/trend-react-app'
+        sh 'docker push $IMAGE'
       }
     }
-    stage('Deploy to EKS') {
+
+    stage('Deploy') {
       steps {
-        sh 'kubectl apply -f deployment.yaml'
-        sh 'kubectl apply -f service.yaml'
+        sh 'kubectl set image deployment/trend-react trend-react=$IMAGE'
       }
     }
   }
