@@ -1,0 +1,10 @@
+cd ~/Trend
+
+# Ignore Terraform providers and big binaries
+echo ".terraform/" >> .gitignore
+echo "jenkins.war" >> .gitignore
+echo "awscliv2.zip" >> .gitignore
+
+git add .gitignore
+git commit -m "Ignore Terraform providers and large binaries"
+terraform.tfstate
