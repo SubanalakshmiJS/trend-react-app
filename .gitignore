@@ -17,3 +17,13 @@ awscliv2.zip
 .DS_Store
 *.log
 
+# Terraform cache (important)
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+
+# Node
+node_modules/
+
+# Build
+build/
