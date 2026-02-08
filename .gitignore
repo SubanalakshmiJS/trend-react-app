@@ -1,10 +1,19 @@
-cd ~/Trend
+# Terraform
+terraform/*.terraform
+terraform/*.tfstate
+terraform/*.tfstate.backup
 
-# Ignore Terraform providers and big binaries
-echo ".terraform/" >> .gitignore
-echo "jenkins.war" >> .gitignore
-echo "awscliv2.zip" >> .gitignore
+# Node
+node_modules/
 
-git add .gitignore
-git commit -m "Ignore Terraform providers and large binaries"
-terraform.tfstate
+# Build output
+build/
+
+# Large binaries
+jenkins.war
+awscliv2.zip
+
+# OS / temp
+.DS_Store
+*.log
+
