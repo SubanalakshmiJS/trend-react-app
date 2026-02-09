@@ -19,18 +19,7 @@ pipeline {
         sh 'docker build -t $IMAGE .'
       }
     }
-	stage('Configure Kubeconfig') {
-    steps {
-        withCredentials([[
-            $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-jenkins-creds'
-        ]]) {
-            sh '''
-                aws eks update-kubeconfig --region ap-south-1 --name trend-cluster-v2 
-            '''
-        }
-    }
-}
+	
 
     stage('Docker Push') {
       steps {
@@ -47,16 +36,20 @@ pipeline {
         }
       }
     }
-
-    stage('Deploy to EKS') {
-      steps {
-	withEnv(["KUBECONFIG=/home/ubuntu/.kube/config"]) {
-    sh '''
-      kubectl set image deployment/trend-app trend=$IMAGE
-      kubectl rollout status deployment/trend-app
-    '''
-  }
-}
+	  stage('Configure Kubeconfig') {
+    steps {
+        withCredentials([[
+            $class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'aws-jenkins-creds'
+        ]]) {
+            sh '''
+                aws eks update-kubeconfig --region ap-south-1 --name trend-cluster-v2 
+				kubectl set image deployment/trend-app trend=$IMAGE
+     			kubectl rollout status deployment/trend-app
+            '''
+        }
     }
+}
+
   }
 }
